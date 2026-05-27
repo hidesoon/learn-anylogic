@@ -1,0 +1,36 @@
+*来源 (Source): <https://anylogic.help/api/com/anylogic/engine/markup/RoadDrivingDirection.html>*
+
+---
+
+Package [com.anylogic.engine.markup](package-summary.md)
+
+# Enum Class RoadDrivingDirection
+
+[java.lang.Object](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Object.html "class or interface in java.lang")
+
+[java.lang.Enum](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/Enum.html "class or interface in java.lang")<[RoadDrivingDirection](RoadDrivingDirection.md "enum class in com.anylogic.engine.markup")>
+
+com.anylogic.engine.markup.RoadDrivingDirection
+
+All Implemented Interfaces:
+:   `Serializable`, `Comparable<RoadDrivingDirection>`, `Constable`
+
+---
+
+```
+public enum RoadDrivingDirection
+extends Enum<RoadDrivingDirection>
+```
+
+Driving direction, one of the following constants:
+RIGHT\_HAND
+LEFT\_HAND
+
+## Nested Class Summary
+
+## Method Summary
+
+| Modifier and Type | Method | Description |
+| --- | --- | --- |
+| `static RoadDrivingDirection` | `valueOf(String name)` | Returns the enum constant of this class with the specified name. |
+| `static RoadDrivingDirection[]` | `values()` | Returns an array containing the constants of this enum class, in the order they are declared. |
