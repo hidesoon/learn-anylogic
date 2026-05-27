@@ -1,0 +1,15 @@
+# Python virtual environment (design-time API testing)
+.venv/
+
+# Python caches
+__pycache__/
+*.pyc
+
+# AnyLogic regenerable GIS tile cache (large binary, re-downloaded on open)
+**/cache/giscache*
+
+# Staging area for raw inbound material (extract into references/ before committing)
+inbox/
+
+# Raw HTML cache for the AnyLogic Help mirror (regenerable via fetch.py)
+references/anylogic-help/.cache/
