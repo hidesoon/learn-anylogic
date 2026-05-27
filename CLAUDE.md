@@ -27,6 +27,12 @@ The top-level [README.md](README.md) is the human-facing index (research goal, d
 
 The user writes primarily in **Chinese**; existing reports and prompts are in Chinese. Match the language of the surrounding documents.
 
+## Literature review entries
+
+[reports/literature-review.md](reports/literature-review.md) uses a fixed annotated-entry template: each source is an `### [Ln]` heading with `####` sub-headings (出处 / 类型 / 内容摘要 / 核心贡献 / 与本研究的相关性 / 批判性评估 / 可延伸的研究问题). Reuse this template for new entries, and always classify **source type** (peer-reviewed vs. industry/gray literature) — assessing evidence quality is the point of the review.
+
+Repeating the `####` field names across entries is intentional; [.markdownlint.json](.markdownlint.json) sets `MD024: siblings_only` so it does not warn (and disables `MD013` line-length for CJK prose). When a new reference introduces foreign author names or tool/API terms, add them to [cspell.json](cspell.json) to keep the spell-checker quiet.
+
 ## Adding reference transcripts
 
 The existing webinar transcript was produced with `yt-dlp` (already installed). To add another video transcript to `references/transcripts/`, download the captions and strip the VTT timing/markup into clean prose:
