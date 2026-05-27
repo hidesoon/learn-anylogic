@@ -186,8 +186,8 @@ The AnyLogic Company. *Java in AnyLogic* (AnyLogic Help › Advanced › Writing
   - **运行 / 集成**则可以纯 Java:**导出为独立 Java 应用 / 库**后,可在外部 Java 工程中 `import` 模型类、**无 UI 以 fast mode** 运行并喂参数取结果。**但导出是 Professional 专属功能,PLE 不能导出 Java**(见佐证页)。
 - **运行期 ≠ 建模期。** 模型跑起来后确可用 Java**动态**创建 agent、加连接(如 `add_population(…)`、`connectTo(…)`),但这是在 GUI 已定义好的框架内的**运行期行为**,不等于用 Java"声明"出模型本身。
 - 由此,"把 LLM 当 AnyLogic 建模工具"的能力边界被这条架构事实硬性约束:LLM 能写的是**嵌入式 Java 片段**,而非作为代码的**模型结构**。
-- **但"用代码建模"正在被 Python(不是 Java)改写——这是关键更正。** AnyLogic 官方 R&D(见 co-design 演讲,本 repo 已收录字幕)展示了**设计期(design-time)Python API**:一组镜像 AnyLogic 元素与属性的 Python 模块,可在模型内**程序化创建/修改**元素;其内部扩展 build 已能由 LLM(GPT‑5 + Cursor)生成 Python 脚本,一键搭出完整 flowchart / statechart / 参数并在 AnyLogic 中编译运行。空间标记(space markup)的 Python API 已在**公开路线图**,完整模型逻辑生成仍属**未发布的 R&D**。
-- **一句话收束:纯 Java 建模 ❌(Java 只是嵌入层);Python 设计期 API 建模 ⏳(官方在做、未正式发布);手写 `.alp` XML 是无官方支持的旁路。** 所以当前能稳定做的是让 LLM 写**嵌入式 Java 片段**;让 LLM 产出**模型结构**则要么等(未来的)Python API,要么走脆弱的 `.alp` 生成。
+- **但"用代码建模"正在被 Python(不是 Java)改写——这是关键更正。** AnyLogic 官方 R&D(见 co-design 演讲,本 repo 已收录字幕)展示了**设计期(design-time)Python API**:一组镜像 AnyLogic 元素与属性的 Python 模块,可在模型内**程序化创建/修改**元素;其内部扩展 build 已能由 LLM(GPT‑5 + Cursor)生成 Python 脚本,一键搭出完整 flowchart / statechart / 参数并在 AnyLogic 中编译运行。空间标记(space markup)的设计期 Python API **已实际发布为 beta**——`anylogic-design-time-api` **8.9.7**(`Development Status :: 4 - Beta`,依赖 `py4j`,需 AnyLogic 8.9.7+ 配 Graphical Editor API Connector、用一次性 token 连到正打开的编辑器),本 repo 的 `.venv` 已安装,可程序化创建 **42 类空间标记**对象(Path / Node / Conveyor / Robot / Crane / RackStorage / Rail / Road / Pipe…)。**更正自本条此前"仅在公开路线图"的判断(2026-05-28 复核)。** 但**完整模型逻辑(flowchart / statechart)生成仍属未发布的 R&D**。
+- **一句话收束:纯 Java 建模 ❌(Java 只是嵌入层);Python 设计期 API 建模 ◐(空间标记已发 beta、可程序化生成,flowchart/statechart 逻辑仍未发布);手写 `.alp` XML 是无官方支持的旁路。** 所以当前能稳定做的是让 LLM 写**嵌入式 Java 片段**;让 LLM 产出**模型结构**则要么等(未来的)Python API,要么走脆弱的 `.alp` 生成。
 
 #### 商业/许可证约束(关键)
 
@@ -206,7 +206,7 @@ The AnyLogic Company. *Java in AnyLogic* (AnyLogic Help › Advanced › Writing
 
 - **连"纯 Java 运行/集成"也要 Professional license。** 唯一能纯 Java 跑模型的途径(导出独立 Java 应用/库)是 **Professional 专属**;**PLE 与 University 都不能导出 Java**。也就是说"用代码而非 GUI 去操作整个模型"在免费档/教育档**根本不可得**——这是个**商业闸门**,不只是技术取舍。
 - **本 repo 用 PLE,因此**:搭建只能 GUI、写 Java 只能落在属性框;**走不通**"导出 → 外部 Java 工程批量驱动/无 UI 评测"这条实验路线;且受上述规模上限约束(小型复现够用,批量/大规模评测会撞墙)。
-- **推论**:若研究要做"LLM 生成模型 → 程序化批量运行评测"的闭环,**许可证就是硬成本**(需 Professional)。同理,未发布的 **Python 设计期 API** 一旦发布,其**授权归属**(PLE? University? Professional-only?)将直接决定"LLM 代码化建模"对普通用户是否可及——值得追踪。
+- **推论**:若研究要做"LLM 生成模型 → 程序化批量运行评测"的闭环,**许可证就是硬成本**(需 Professional)。同理,**Python 设计期 API(空间标记部分现已发 beta,见下「核心贡献」更正)**在各档(PLE? University? Professional?)的**实际可用性**——尤其其依赖的 Graphical Editor API Connector 是否对 PLE 开放——将直接决定"LLM 代码化建模"对普通用户是否可及,仍需实测追踪。
 
 #### 与本研究的相关性
 
@@ -229,7 +229,7 @@ The AnyLogic Company. *Java in AnyLogic* (AnyLogic Help › Advanced › Writing
 - **`.alp` 生成可行性**:`.alp` 是 XML,LLM 能否直接生成/编辑出可被 AnyLogic 打开的合法 `.alp`?这是把 [L2] 的"图→代码"思路迁到 AnyLogic 的代码化路径之一(另一条、也是官方方向,是设计期 Python API——见 [L4] 出处的 co-design 演讲),值得专门做一组实验,并对照 FlexScript 路径与 Python API 路径的难度。
 - **两类任务分别评测**:把"生成嵌入式 Java 片段"与"生成 `.alp` 结构"做成两个独立任务集,分别量化一次成功率与人工修正量,验证二者难度差。
 - **逆向理解探针**:既然模型"fully mapped to Java",让 LLM 读导出的生成 Java、反推/复述模型结构,可检验其对 AnyLogic 生成代码的真实理解程度。
-- **许可证可及性追踪**:(a) 未发布的 Python 设计期 API 将落在哪个 edition(PLE / University / Professional)?这决定"LLM 代码化建模"对普通用户是否可及;(b) "导出 → 外部 Java 批量评测"路线需 Professional license,评估这一**商业成本**对本 repo 实验设计(规模、自动化程度)的实际约束。
+- **许可证可及性追踪**:(a) Python 设计期 API(空间标记部分已发 beta)在哪个 edition(PLE / University / Professional)实际可用?其依赖的 Graphical Editor API Connector 是否对 PLE 开放?这决定"LLM 代码化建模"对普通用户是否可及;(b) "导出 → 外部 Java 批量评测"路线需 Professional license,评估这一**商业成本**对本 repo 实验设计(规模、自动化程度)的实际约束。
 
 ---
 
@@ -413,7 +413,7 @@ PLE 容量上限(逐项,与 [L4] 表一致,此处给原文措辞):
 
 - **PLE 可行域清单**:把本 repo 计划的每个复现任务逐一对照 PLE 上限,产出「哪些能在免费档跑、哪些必须 Professional」的清单,作为 [experiments/](../experiments/) 选题的前置筛子。
 - **license 成本 vs 自动化收益**:评估「购 Professional 以打通导出 → 外部 Java 批量评测」对本 repo 研究闭环的性价比(对照 [L4] 的同名问题)。
-- **追踪 Python 设计期 API 的授权归属**(承 [L4]):落在 PLE / University / Professional 哪档,直接决定「LLM 代码化建模」的可及性。
+- **追踪 Python 设计期 API 的各档可用性**(承 [L4];空间标记部分已发 beta、需 Graphical Editor API Connector):它在 PLE / University / Professional 哪档实际可用,直接决定「LLM 代码化建模」的可及性。
 - **库受限的实测**:在 PLE 里实测 Material Handling / Pedestrian 等「limited」库到底卡在哪,判断涉及这些库的 LLM 复现实验是否需要升级档位。
 
 ---
@@ -449,7 +449,7 @@ Pypeline 是一个自定义 AnyLogic 库,核心是一个可拖入模型的 **PyC
 中—高,且**补在 [L5] 之下作为其技术底座**。本条本身不谈 LLM,但它是「让 LLM 进入 AnyLogic」的**管道层**:
 
 - **直接支撑 [L5]**:Noorjax 的「让模型开口说话」正是用 **Pypeline + OpenAI Assistants API** 实现的——L5 是应用,本条是基础设施。要复现/扩展 L5,必先理解 Pypeline 的 `run`/`runResults`/JSON 机制。
-- **关键澄清:运行期 Python(Pypeline)≠ 设计期 Python API([L4]/co-design 演讲)。** 二者极易混淆但完全不同:**Pypeline 在仿真运行时**启动 Python 去调库/跑推理,**不生成模型结构**;[L4] 所述(未发布的)**设计期 API 在搭建时**程序化创建 flowchart/statechart/参数。本 repo 的能力地图应把这两条 Python 通路分列——一条已发布、PLE 可用、属运行/分析端;另一条是 R&D、属建模端。
+- **关键澄清:运行期 Python(Pypeline)≠ 设计期 Python API([L4]/co-design 演讲)。** 二者极易混淆但完全不同:**Pypeline 在仿真运行时**启动 Python 去调库/跑推理,**不生成模型结构**;[L4] 所述**设计期 API 在搭建时**程序化创建元素(空间标记部分已发 beta,见 [L4] 更正;flowchart/statechart 逻辑仍未发布)。本 repo 的能力地图应把这两条 Python 通路分列——一条已发布、PLE 可用、属运行/分析端;另一条属建模端(空间标记已 beta,逻辑生成仍 R&D)。
 - **再证 [L4]「Java 只是嵌入层」**:PyCommunicator 是 GUI 里拖入的库对象,`run(...)` 调用写在属性框/事件动作里——Pypeline 全程落在「嵌入式片段」层,从未触碰模型结构生成。
 - **延续「结构化数据」母题**:Pypeline 用 JSON 在两端传递复杂对象,与 [L2]「喂结构化表格胜过喂原图」、[L5]「`NameOfStat:{{Time:Value}}` 格式约定」、[L6]「对官方文档做 RAG」同属「给模型可信、结构化的上下文」这一主线。
 - **对本 repo 实验可行性的意义**:鉴于 [L7] 指出纯 Java 导出需 Professional,而 Pypeline 在 **PLE 即可用**,它有望成为本 repo「从 AnyLogic 驱动 Python(进而驱动 LLM API)」实验的**免费档可行载体**。
@@ -471,12 +471,135 @@ Pypeline 是一个自定义 AnyLogic 库,核心是一个可拖入模型的 **PyC
 
 ---
 
+### [L9] The AnyLogic Modeler(Kgoale, 2025):用 AI 辅助搭建 AnyLogic 模型——多工具 + VS Code/Copilot/ALPX + GitHub agent 工作流
+
+#### 出处
+
+Kgoale, S.(The AnyLogic Modeler). *Using AI to Help Build AnyLogic Simulation Models.* The AnyLogic Modeler 博客,**2025-10-22**(约 6 分钟阅读)。
+
+- 链接:<https://www.theanylogicmodeler.com/post/using-ai-to-help-build-anylogic-simulation-models>
+- 作者:Selaelo Kgoale —— 自述「a simulation enthusiast and junior engineer at The AnyLogic Modeler」;博客 slogan「Make simpler, better models, faster in AnyLogic」。
+- 无本地副本(仅 URL,同 [L4]/[L7])。
+
+#### 类型
+
+行业/灰色文献(**第三方实践者博客**的署名 how-to 短文)。**非**同行评审、**非**实证研究;轶事式操作演示,无量化指标、无失败案例。与 [L1]/[L5]/[L8] 的 **AnyLogic 公司官方**材料不同,本条出自一家独立小型咨询/实践者博客(非厂商),但同样带服务推广倾向。值得标记两点:本条是全综述**时间最新(2025-10)**、且**首次覆盖 ChatGPT 以外多种现代工具(Grok / Perplexity / GitHub Copilot)与 IDE/GitHub agent 工作流**的来源——正好接在 [L1]/[L5]/[L6] 的 GPT-3.5/4 时代之后。
+
+#### 内容摘要
+
+把「用 AI 辅助 AnyLogic 建模」拆成**三条并行工作流**,横跨从概念到代码到工程协作的多层:
+
+- (A) **通用聊天机器人(ChatGPT / Grok / Perplexity)**:做概念性结构指引(例:「如何搭一个库存管理系统」→ 返回 agent 定义、变量建议、对象关系)与 Java 片段生成(例:用 Grok 生成一个遍历 dock 集合、找出空间足够者的函数)。作者强调这些产出只是「起点」,且**不能直接落进 AnyLogic 的拖拽环境**,须人工译写进 Function Object/属性框。
+- (B) **VS Code + GitHub Copilot 直接编辑模型文件**:把模型存为 **ALPX 格式**并勾选「Use multi-part ALP format」,在 VS Code 里**打开整个文件结构**,用注释触发 Copilot 行内代码建议(如逐行生成一个 for 循环),保存后在 AnyLogic 重新加载。
+- (C) **GitHub 上的 Copilot agent 协作**:把任务指派给 Copilot(例:为所有变量补描述,并提示「The location of the description can be found in the `Description>` tag in the XML of various parts」),Copilot 随即自动开一个 **work-in-progress 分支 + pull request + 进度 checklist**,并在开始/完成时邮件通知;Copilot 也用于 **PR 代码审查**(coding best practices 与 model architecture)。
+
+#### 核心贡献/主张
+
+- **首次在本综述里呈现「多工具」现代图景**:不止 ChatGPT,还并列 Grok、Perplexity、GitHub Copilot,并按用途分工(聊天机器人 = 概念/片段;Copilot = IDE 行内 + PR 审查 + agent 任务)。
+- **首次记录「VS Code + Copilot + ALPX(multi-part ALP)」工作流**:绕开 AnyLogic GUI,在 IDE 里看/改模型的**展开文件结构**,再回灌 AnyLogic——这是把 [L4] 所说「`.alp`/XML 旁路」**真有人在用**的一手记述。
+- **首次出现「把 AnyLogic 模型当 git 仓库、让自治编码 agent(Copilot)在其上作业」**:WIP 分支、PR、checklist、邮件通知——一个完整的「agent 改模型文件」闭环,且明确指向 `Description>` XML 标签。
+- 重申**人在环**:「AI recommendations should not be implemented without a thorough review from the developer.」
+- 重申**译写鸿沟**(呼应 [L4]):聊天机器人产出的 Java「cannot be directly translated」进拖拽环境,须手工实现于对象属性——又一例「Java 只是嵌入层」。
+
+#### 与本研究的相关性
+
+高,且**正是 backlog 里被提为正式条目的那条**(VS Code + Copilot + ALPX 工作流)。它在两处补强本综述:
+
+- **给 [L4] 的开放问题提供首个真实数据点**:[L4] 把「LLM 直接生成/编辑 `.alp` XML」列为绕过 GUI 的(无官方支持的)代码化旁路;本条是有人**实际在 IDE + agent 里编辑模型 XML** 的一手记述。但关键在其**局限**:agent 改的只是 `Description>`(文档元数据),是 XML 里最安全的一类编辑,**并未生成 flowchart 拓扑/模型逻辑**——所以它证明的是「IDE 编辑模型 XML 的**元数据**可行」,而非「LLM 能用 XML 生成模型**结构**」。这恰好把 L4 的研究问题**细化**成「能改元数据 → 能否改结构?」的梯度。
+- **补上一条新轴:围绕模型文件的工具链(git / IDE / PR agent)**,区别于 [L1]/[L5] 的「浏览器里聊天」范式,也区别于 [L8] Pypeline 的「运行期 Python 桥」。它与 [L4] co-design 演讲的「设计期 Python API」方向**精神相通**(都想让代码/agent 触碰模型本体),但走的是**无官方支持的 XML 编辑**而非受支持的 API。
+- **时效锚点**:本条是综述里**最新(2025-10)**、且首个使用 **2025 年代工具与自治 agent** 的来源,契合本 repo 用 `YYYY-MM-DD-` 前缀追踪 LLM 能力随版本演化的设计。
+
+#### 批判性评估(局限)
+
+- **证据等级最低**:约 6 分钟的轶事式 how-to 短文,无任何成功率/准确率/对照,也无失败案例;作者自述为某咨询博客的「junior engineer」,文章带服务推广性质,正面案例难免经挑选。
+- **ALPX/multi-part ALP 路线是无官方支持的旁路**(承 [L4]):直接编辑模型 XML 并非官方文档化的「代码建模」API,schema 未公开、天然脆弱;且文章对机制**语焉不详**(只说「在 VS Code 打开」),既未展示 XML,也未说明回灌后模型是否仍**合法可开**——**可复现性很弱**。
+- **「agent 改 XML」的演示很窄**:只补**描述(文档元数据)**,是风险最低的一类编辑;并未演示新增变量、Function Object 或 flowchart 块等**真正的结构/逻辑改动**。标题「build AnyLogic models with AI」**夸大**了实际所示(实为「edit/annotate」而非「build」)。
+- **工具罗列而无对比、无版本**:并列 4+ 工具却不比较优劣、不标注模型版本(哪个 GPT?哪个 Copilot 模型?),使「能力」类断言无法钉到具体版本,反而削弱了它本应有的时效追踪价值。
+- **只覆盖建模/编辑的子集**:不涉及运行/导出/RL/Pypeline,纯属搭建端,且只是其中「编辑」一环。
+
+#### 可延伸的研究问题
+
+- **系统检验 multi-part ALP / ALPX 编辑路径的上限**:让 LLM/agent 在模型 XML 里做超出「补描述」的改动——新增一个变量、一个 Function Object、一个 flowchart 块——AnyLogic 能否合法重开?这把 [L4] 的「`.alp` 生成可行性」用一个**具体的 IDE+agent harness** 操作化。
+- **三条「LLM 触碰模型结构」路径对比**:GitHub-Copilot-agent-改仓库(本条) vs.(未发布)设计期 Python API([L4]) vs. GUI 内聊天([L1]),在「一次成功率」与「重开仍合法」上横向评测。
+- **同任务多工具横评**:在同一组 AnyLogic Java 片段任务上对比 ChatGPT / Grok / Perplexity / Copilot,看工具选择是否真的造成差异(并钉住版本)。
+- **round-trip 完整性**:实测「注释 → Copilot 行内建议 → 回 AnyLogic 重载」能否往返而不损坏 ALPX,量化返工量。
+
+---
+
+### [L10] Hsu 等(NYCU, 2025):Generative Digital Twins —— 训练视觉-语言模型从草图+提示生成可执行 FlexScript
+
+#### 出处
+
+Hsu, Y., Wang, A., Ni, T., & Yang, Y. (2025). *Generative Digital Twins: Vision-Language Simulation Models for Executable Industrial Systems.* arXiv:2512.20387 [cs.AI].
+
+- arXiv:<https://arxiv.org/abs/2512.20387>;DOI:<https://doi.org/10.48550/arXiv.2512.20387>
+- 本地 PDF:[../references/papers/generative-digital-twins-vlsm-flexscript.pdf](../references/papers/generative-digital-twins-vlsm-flexscript.pdf)
+- 单位:National Yang Ming Chiao Tung University(NYCU,阳明交通大学,台湾),Institute of Artificial Intelligence Innovation。
+- 提交 **2025-12-23**(v1);本条评述基于 **v1**。
+
+#### 类型
+
+**学术预印本**(arXiv,cs.AI),**未经同行评审**,出自单一实验室。但与本综述其它来源都不同,它是一篇**定量、成规模的机器学习实证论文**:12 万样本的自建数据集 + 三个自定义指标 + 跨「LLM backbone × 视觉编码器 × 连接器」的系统消融——在**定量评测装置**上是全综述最完备的一条。然而这层严谨被三点同时削弱:(1) 数据集是**自建合成**的(作者自己在 FlexSim 里实例化参考工程、再用 GPT + 人工写提示),训练/测试**同分布**(IID 90/5/5 划分);(2) 三个指标**自定义、自评**;(3) v1 未给出数据集/代码的公开发布链接(可复现性待核)。故其证据等级:**定量规模强于唯一一篇同行评审的 [L6]**,但 [L6] 有真实人类受试 + 同行评审,本条是**合成闭世界 + 未评审**——两者不可简单互比。
+
+#### 内容摘要
+
+本条是全综述里**最激进的一条「让 LLM 生成完整可执行模型」**的尝试,且**正面接续 [L2]**(同为 FlexSim/FlexScript 域)。但路线相反:[L2] 直接 prompt 通用 ChatGPT(并发现其「看图读布局」不可靠),本文则**专门训练一个多模态模型**来做同一件事。
+
+- **任务(VLSM = Vision-Language Simulation Model)**:输入「布局草图(图像)+ 自然语言提示」,输出**可执行的 FlexScript**(FlexSim 的专有脚本),以替代数字孪生建模中最耗时的人工环节(手工摆放对象、配参数、写逻辑脚本)。动机直指 [L2] 的痛点:通用 LLM**缺乏视觉接地(visual grounding)**,难以处理工厂布局这类空间组织域。
+- **GDT-120K 数据集**:**120,285** 条 prompt–sketch–code 三元组,号称「首个面向 generative digital twins 的大规模数据集」。构造流水线(Fig 2):工厂调查 → 数据整理 →(统计拟合校验到达/处理时间 ‖ 布局图可视化 ‖ 设备参数标准化)→ Real-to-Sim(在 FlexSim 建模)→ FlexScript 提取 → **提示生成(Human + GPT)**→ 数据整合。五层设计框架(产线流程 / 参数多样性 / 自动化水平 / 行业类型 / 布局构型)。统计:布局 **90.9% workstation / 9.1% conveyor**;自动化 manual 27.3%、operator/robot/AGV/taskexecutor 各 18.2%;**13 个行业**(半导体、电子、photomask、食品加工、PCB、EV 电池、LED、wafer test、server motherboard、医疗器械、制药、汽车电子、panel production);布局类别 linear / U-shaped / parallel / conveyor。参数化:**5 种到达分布 × 9 种服务分布**,平均每布局 3 台机器 → 每布局 **3645(5×9×9×9)** 参数组合。**注:仅「a subset」三元组带配对草图**,并非 12 万条都有图。
+- **架构**:评测 **7 个开源 LLM backbone**——**Gemma3-270M、TinyLLaMA-1.1B 全量重训**;LLaMA2-7B、LLaMA3-8B、CodeLLaMA-7B、StarCoder2-7B、Mistral-7B 用 **4-bit QLoRA** 微调。**刻意强调轻量 backbone**,以便中小企业(SME)在普通 GPU 上**本地部署**。视觉编码器:OpenAI **CLIP**(ViT)与 LAION **OpenCLIP**(ViT-g/14)。连接器(TinyLLaVA 风格):**Linear Projection / Perceiver Resampler / Q-Former / Two-Layer MLP** → 每个 backbone 8 种多模态配置。
+- **三个指标**(明确指出 BLEU-4 无法反映结构/功能正确,故仅作补充):
+  - **SVR(Structural Validity Rate)= 0.6·CS + 0.4·OS**。CS(connection score)= 正确复现的 `contextdragconnection(...)` 连接数 / 总连接数;OS(object score)= 正确声明的对象比例(objType 正确 + objName **大小写敏感精确匹配**)。权重偏向连接,因为拓扑决定路由/阻塞/调度。
+  - **PMR(Parameter Match Rate)**= 名称 + 类型 + 值**全部匹配**的参数比例(`exponential(10)` vs `exponential(15)` 算不匹配)。
+  - **ESR(Execution Success Rate)**= 能在 FlexSim 里**无需人工修正即编译运行成功**的脚本比例。
+- **结果**(8×NVIDIA L40,10 epochs):
+  - 纯文本(Table 3):**StarCoder2-7B 最佳**(SVR .9905 / PMR .9886 / ESR .8620);**TinyLLaMA-1.1B 次之**(.9444/.9424/.8380);**Gemma3-270M 第三**(.9328/.9219/.8040)。通用大模型差:LLaMA3-8B **崩盘**(.2447/.0466/.1920)、CodeLLaMA-7B(.5127/.1654/.4660)、LLaMA2-7B(.7104/.0513/.4480)、Mistral-7B(.9107/.6108/.6860)。
+  - **核心结论:「scale alone is insufficient」**——代码预训练的 StarCoder2-7B 与**全量重训的极小模型**击败更大的通用 LLaMA;代码预训练 + 域内重训比单纯堆参数更重要。
+  - 加视觉的消融(Table 4/5):TinyLLaMA 下 OpenCLIP+Linear 最佳(PMR .9424→.9505、ESR .8380→.8820),**但有些配置反而掉点**(CLIP+Linear 把 SVR 从 .9444 拉到 .8911);StarCoder2 纯文本已近天花板,OpenCLIP+Two-Layer MLP 取得最高 SVR **.9990**、ESR .8740。**OpenCLIP > CLIP;越小的 backbone 从视觉获益越多。**
+  - **最终模型**:**VLSM-1.1B**(TinyLLaMA+OpenCLIP+Linear)、**VLSM-7B**(StarCoder2+OpenCLIP+Two-Layer MLP)。配 Gradio UI;结果在 **NVIDIA Omniverse** 渲染。
+
+#### 核心贡献/主张
+
+- **首个**面向「草图+提示 → 可执行仿真代码」的大规模(120K)多模态数据集 GDT-120K,**首批**专为 FlexScript 优化的多模态模型(VLSM 家族)。
+- **三个任务专用指标(SVR/PMR/ESR)**:超越 BLEU,分别刻画**结构 / 参数 / 可执行**保真度——一套可被复用的评测框架(对本 repo 尤为有用,见下)。
+- **实证「代码预训练 + 域内重训 > 单纯规模」**:1.1B 全量重训或 7B 代码模型胜过 7–8B 通用模型;轻量/本地部署对 SME 可行。
+- **视觉条件可提升执行鲁棒性**(尤其对小 backbone),但纯文本的 StarCoder2 已近天花板(这条主张其消融**只弱支持**,见批判)。
+
+#### 与本研究的相关性
+
+高,且**在「LLM 能否生成模型结构本身」这条最难的轴上,提供了迄今最强的一个数据点**。
+
+- **直击 [L4] 标记的硬骨头**:[L4] 把任务拆成「(a) 生成嵌入式片段」与「(b) 生成模型结构本身」,并指出后者最难、最有价值、最少被探索。[L1]/[L5]/[L8] 停在嵌入式片段层,[L9] 只编辑 XML 元数据,[L2] 做了对象摆放但 n≈1 且看图不可靠——**本文第一个在「结构 + 参数 + 可执行」三层同时、且成规模带指标地**攻这个任务。
+- **[L2] 的直接后继(跨工具对照)**:同为 FlexSim/FlexScript,但 [L2] 是「prompt 通用 ChatGPT 看图」并发现不可靠,本文是「**训练专用视觉编码器 + 连接器**」绕开这个不可靠。两者的母题与本 repo 一贯的「**喂结构化输入胜过喂原始信息**」([L2]/[L5]/[L6]/[L8])殊途同归——其实本文那段**近乎完整的文本规格提示**(Fig 9:「Source 释放 item 服从指数分布、均值 10s……」)正是极致的结构化输入。
+- **但有关键的 FlexSim 限定(承 [L4])**:FlexSim **本就有可编程建模通道**(`contextdragconnection` / `createinstance`),正是这一点让「生成可执行的模型代码」成为可能;而 **AnyLogic 的已发布产品没有等价的「结构层目标语言」**——只有无官方支持的 `.alp` XML,或**未发布的 Python 设计期 API**。因此**本文方法不能原样迁到 AnyLogic**:AnyLogic 的对口落点要么是(未来的)Python 设计期 API,要么是脆弱的 `.alp` 生成(正是 [L4]/[L9] 指出的缝隙)。
+- **方法论馈赠——SVR/PMR/ESR 可直接移植**:为本 repo 评测「LLM 建 AnyLogic 模型」提供现成的量化口径——SVR 可定义在 flowchart 连接 + block 声明上,PMR 在 block 属性上,ESR = 「`.alp` 能在(PLE 里)打开并运行」。这把 [L4] 的「片段 vs 结构」两类任务**操作化成可打分的指标**,可直接用于 [experiments/](../experiments/)。
+- **新增一条战略轴:「训练/微调小专用模型」vs「prompt 大通用模型」**。此前所有条目都默认「调用现成 LLM」;本文的「小模型全量重训 > 大通用模型」是一条**可在 AnyLogic 上检验的假设**(对 Java 片段任务和/或 `.alp` 生成),并与 [L6] 的 **LRPL(低资源编程语言)**论点相扣——FlexScript / AnyLogic Java API 都是低资源 DSL,理应从域内训练/RAG 显著获益。
+- **时效锚点**:提交于 **2025-12**,是本综述**目前最新**的一条(晚于 [L9] 的 2025-10),也是首条走「专门训练多模态模型」而非「prompt 现成模型」路线的来源。
+
+#### 批判性评估(局限)
+
+- **未经同行评审、单一实验室**:预印本,「first」类断言属典型预印本措辞,需后续评审与独立复现背书。
+- **最大问题——合成闭世界评测**:训练与测试出自**同一套生成流水线**(IID 90/5/5),「ground truth」FlexScript 就是作者自己实例化出来的。近乎满分的 SVR(.999)更可能说明模型**学会了复现自己那套模板化生成语法**,而非能处理**真实、新颖**的工厂布局。**全文没有 OOD / 真实世界测试**,外部效度未建立——这是评估其「near-perfect」结论时最该打的折扣。
+- **「视觉」贡献被其自身消融弱化**:StarCoder2 纯文本 SVR 已 .9905 近天花板,加视觉只带来边际提升、**有时反而掉点**(TinyLLaMA+CLIP)。标题与摘要强调的「visual grounding is crucial」**只得到弱支持**——因为那段**近乎完整的文本规格提示**已携带绝大部分信号,任务实质更接近「**结构化规格 → 代码**」而非真正的「**草图 → 代码**」;何况只有「a subset」样本带草图。
+- **指标自定义、自评**:SVR 的 0.6/0.4 权重是启发式/任意的。**唯 ESR 客观**(靠 FlexSim 实际执行)——但即便 SVR/PMR 近满分,**ESR 仍卡在 ~0.87**:约 13% 结构看似无误的脚本**仍跑不起来**,正是「看着对、其实跑不通」的鸿沟(呼应 backlog 里制造业 DES「能跑但逻辑常错」一文)。
+- **可复现性待核**:v1 自称「reproducible benchmark」,却**未给出数据集/代码的公开发布链接**;在 GDT-120K 与训练代码真正开放前,这条「基准」难以被第三方复用或证伪。
+- **单工具、单 DSL、单数据集**:仅 FlexSim/FlexScript,且数据来自一套生成器;与 AnyLogic 的关联是**跨工具的、间接的**(同 [L2]),迁移须谨慎。
+
+#### 可延伸的研究问题
+
+- **把 SVR/PMR/ESR 移植到 AnyLogic**:定义 connection score(flowchart 连线)、object score(block 声明)、parameter match(block 属性)、ESR(`.alp` 能在 PLE 打开并运行),给本 repo 一套「LLM 建 AnyLogic 模型」的量化口径——直接操作化 [L4] 的「片段 vs 结构」两类任务。
+- **在 AnyLogic 上检验「小专用模型 > 大通用模型」**:域内微调的小代码模型,在 (a) Java 片段、(b) `.alp` 生成上,能否胜过直接 prompt Claude/GPT?与 [L6] 的 LRPL 假设合并验证。
+- **补做本文缺失的 OOD 测试**:用**非同一生成器**产出的布局(乃至真实工厂图)测 VLSM 式训练能否泛化——这是判断其「near-perfect」是否只是过拟合模板的关键。
+- **文本规格已完整时,视觉到底还值多少?** 在 AnyLogic 场景复测:当提示已是完整结构化规格,再给一张草图能否带来超过文本的增益(本文消融提示「几乎没有」)?
+- **三条「代码化建模」通路的难度对照(承 [L4]/[L9])**:既然 FlexSim 的可编程建模是本文得以成立的前提,AnyLogic 的对口路径只能是(未来)Python 设计期 API 或 `.alp` XML——设计一组平行实验,横比 **FlexScript / Python 设计期 API / `.alp` 生成**三条路径的一次成功率与「重开仍合法」。
+
+---
+
 ## 待评述(backlog)
 
 > 已收集但尚未写批注的来源,先记在这里。
 
 - AnyLogic R&D「AI + the model and the modeler」co-design 演讲([字幕](../references/transcripts/ai-model-and-modeler-co-design.txt)):设计期 Python API + GPT‑5/Cursor 程序化生成模型(flowchart/statechart)——已在 [L4] 部分引用,值得单列一条 [L] 详评(注意:未发布 R&D、无论文、单一 LLM,证据等级低)。
-- The AnyLogic Modeler 实践者博客:VS Code + Copilot + ALPX 工作流。
 - arXiv 2507.21790 *Can large language models assist choice modelling?* —— 同行评审,文档 in-context 提示效果最佳。
 - LLM-driven discrete-event simulation for manufacturing (ScienceDirect) —— "能跑但逻辑常错"的实证。
 

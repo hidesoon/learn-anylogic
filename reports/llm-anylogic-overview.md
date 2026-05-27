@@ -1,7 +1,8 @@
 # 用 LLM 搭建 AnyLogic 模型 —— 实操指南
 
 > 综合 AnyLogic 官方 webinar、官方博客、实践者经验与最新研究整理。
-> 整理日期:2026-05-27。来源见文末。
+> 整理日期:2026-05-27;**2026-05-28 更新**(补充设计期 Python API beta 与成熟度阶梯)。来源见文末。
+> 想看「方法 / 工具 / 成熟度」的全景与证据等级,见配套综合报告 [llm-assisted-modeling-landscape.md](llm-assisted-modeling-landscape.md)。
 
 ## 一、核心认知:LLM 能做什么、不能做什么
 
@@ -15,8 +16,9 @@ AnyLogic 模型有两部分:**可视化 GUI**(拖拽流程块、画状态图、�
 | 调试 Java 报错 | 保证 100% 正确 |
 | 解释别人写的/你自己忘了的旧代码 | 替代仿真专家做架构决策 |
 
-> 一句话:**LLM 是"Java 脚本助手 + 概念顾问",可视化建模部分仍然全靠你手动做。**
-> 目前 AnyLogic **没有**内置的生成式 AI 建模助手(它的"AI 功能"指用仿真训练强化学习,不是帮你建模)。
+> 一句话:**LLM 是"Java 脚本助手 + 概念顾问",可视化建模部分目前仍主要靠你手动做。**
+>
+> **2026-05 更新(松动中)**:"直接生成 `.alp`"这条边界正在被官方**设计期 Python API** 部分打开——`anylogic-design-time-api`(beta,8.9.7+)已能用**代码程序化生成空间标记**(传送带 / 路径 / 节点 / 机器人 / 货架 / 轨道 / 道路…),所以让 LLM 写脚本去搭**空间布局**已可尝试;但 **flowchart / statechart 这类动态逻辑的生成仍是未发布的 R&D**。完整的成熟度阶梯见 [llm-assisted-modeling-landscape.md](llm-assisted-modeling-landscape.md)。AnyLogic 仍**没有**面向终端用户、内置的"对话式建模助手"(其菜单里的"AI 功能"指用仿真训练强化学习,不是帮你建模)。
 
 ## 二、准备工作
 
@@ -69,9 +71,10 @@ webinar 的核心招数。准备一段可复用、可粘贴的文字,一次性�
 ## 七、工具选择
 
 - **ChatGPT** — AnyLogic 唯一官方验证过的(webinar + 博客)。
-- **Claude / 其他通用 LLM** — Java 部分同样能用。
-- **VS Code + GitHub Copilot**(进阶)— 把模型存成 **ALPX 多文件格式**暴露文件结构,对着 XML/截图改。注意 AnyLogic IDE 是 **Eclipse 内核,不是 VS Code**。
-- **嵌入式 ChatGPT 聊天 agent**(第三方 Noorjax 库 + Pypeline)— 让运行中的模型用自然语言聊它自己的输出,属结果分析,不是建模。
+- **Claude / Grok / Perplexity / 其他通用 LLM** — Java 片段与概念指导同样能用;实践者(The AnyLogic Modeler,2025-10)按用途分工:聊天机器人出概念/片段、Copilot 做 IDE 行内 + PR 审查。
+- **VS Code + GitHub Copilot**(进阶)— 把模型存成 **ALPX 多文件格式**暴露文件结构,对着 XML/截图改;Copilot agent 还能在 GitHub 上开分支/PR 改模型文件。注意 AnyLogic IDE 是 **Eclipse 内核,不是 VS Code**;且公开演示只改过 `Description>` 元数据,尚未见生成真正的拓扑/逻辑。
+- **设计期 Python API**(`anylogic-design-time-api`,beta,8.9.7+)— 用 **Python 代码程序化生成空间标记**,连到正打开的编辑器;是让 LLM 触碰"模型结构"的官方落点,但当前仅限空间布局。各档(PLE/University/Professional)可用性待实测。
+- **嵌入式聊天 agent**(第三方 Noorjax 库 + Pypeline)— 让运行中的模型用自然语言聊它自己的输出,属结果分析,不是建模。
 
 ## 来源
 
